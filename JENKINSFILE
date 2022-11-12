@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+    tools{
+        nodejs '19.0.1'
+        git 'git'
+    }
+    stages {
+      stage('Prepare') {
+            steps {
+                echo 'Jenkins GitHub'
+                git 'https://github.com/4o4forbidden/JenkinsDEVSECOPS'
+            }
+        }
+        stage('Install') {
+            steps {
+                git 'https://github.com/4o4forbidden/JenkinsDEVSECOPS'
+                bat 'npm install'
+            }
+        }
+        stage('Test') {
+            steps {
+                bat 'npm test'
+            }
+        }
+    }
+     post {
+        always {
+            echo '~'
+            deleteDir()
+        }
+        success {
+            echo 'Cest Bon'
+            mail to: '4o3forbidden@gmail.com',
+                subject: "Nouvelle version implémentée",
+                body: "Nouvelle version implémentée ~ Jenkins"
+        }
+        failure {
+            echo 'Erreur'
+            mail to: '4o3forbidden@gmail.com',
+                subject: "Erreur dans l'exécution",
+                body: "Erreur dans l'exécution ~ Jenkins"
+        }
+    }
+}
